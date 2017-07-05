@@ -15,6 +15,11 @@ module SparkPost
     end
 
     def send_payload(data = {}, url = endpoint, method = 'POST')
+      if data[:recipients].present?
+        data[:recipients].each do |recipient|
+          recipient[:address][:email] = append_sink(recipient[:address][:email]) if recipient[:address].present?
+        end
+      end
       request(url, @api_key, data, method)
     end
 
@@ -63,9 +68,18 @@ module SparkPost
       if recipient.is_a?(Hash)
         raise ArgumentError,
               "email missing - '#{recipient.inspect}'" unless recipient[:email]
+        recipient[:email] = append_sink(recipient[:email])
         { address: recipient }
       else
-        { address: { email: recipient } }
+        { address: { email: append_sink(recipient) } }
+      end
+    end
+
+    def append_sink(email)
+      if ENV['SINK_EMAILS'] == 'true'
+        "#{email}.sink.sparkpostmail.com"
+      else
+        email
       end
     end
 
