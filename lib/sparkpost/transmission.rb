@@ -8,9 +8,10 @@ module SparkPost
   class Transmission
     include Request
 
-    def initialize(api_key, api_host)
+    def initialize(api_key, api_host, options)
       @api_key = api_key
       @api_host = api_host
+      @options = options
       @base_endpoint = "#{@api_host}/api/v1/transmissions"
     end
 
@@ -77,7 +78,11 @@ module SparkPost
 
     def append_sink(email)
       if ENV['SINK_EMAILS'] == 'true'
-        "#{email}.sink.sparkpostmail.com"
+         if @options[:white_listed_emails].include?(email)
+           email
+         else
+           "#{email}.sink.sparkpostmail.com"
+         end
       else
         email
       end

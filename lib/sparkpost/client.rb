@@ -2,9 +2,10 @@ module SparkPost
   class Client
     attr_reader :transmission
     attr_reader :template
-    def initialize(api_key = nil, api_host = 'https://api.sparkpost.com')
-      @api_key = (api_key || ENV['SPARKPOST_API_KEY']).to_s
-      @api_host = (api_host || ENV['SPARKPOST_API_HOST']).to_s
+    def initialize(options = {})
+      @options = options
+      @api_key = ENV['SPARKPOST_API_KEY']
+      @api_host = ENV['SPARKPOST_API_HOST']
 
       raise ArgumentError, 'No API key is provided. Either provide
        api_key with constructor or set SPARKPOST_API_KEY environment
@@ -16,15 +17,15 @@ module SparkPost
     end
 
     def transmission
-      @transmission ||= Transmission.new(@api_key, @api_host)
+      @transmission ||= Transmission.new(@api_key, @api_host, @options)
     end
 
     def template
-      @template ||= Template.new(@api_key, @api_host)
+      @template ||= Template.new(@api_key, @api_host, @options)
     end
 
     def suppression_list
-      @suppression_list ||= SuppressionList.new(@api_key, @api_host)
+      @suppression_list ||= SuppressionList.new(@api_key, @api_host, @options)
     end
   end
 end
