@@ -5,7 +5,7 @@ module SparkPost
     def initialize(options = {})
       @options = options
       @api_key = ENV['SPARKPOST_API_KEY']
-      @api_host = ENV['SPARKPOST_API_HOST'] || 'https://api.sparkpost.com'
+      @api_host = 'https://api.sparkpost.com'
 
       raise ArgumentError, 'No API key is provided. Either provide
        api_key with constructor or set SPARKPOST_API_KEY environment
